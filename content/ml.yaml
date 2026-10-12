@@ -1,0 +1,16 @@
+# Subdeck LA::ML: notation and concepts from machine learning / statistics.
+deck: LA::ML
+
+notation:
+  - id: ml.notation.ols-estimator
+    verified: false
+    tags: [regression, glm]
+    front: >-
+      In the linear model \(\mathbf{y} = X\boldsymbol\beta + \boldsymbol\varepsilon\),
+      what is \(\hat{\boldsymbol\beta} = (X^\top X)^{-1}X^\top\mathbf{y}\)?
+    back: >-
+      The <b>ordinary least-squares</b> estimate: the \(\boldsymbol\beta\) that
+      minimizes \(\|\mathbf{y} - X\boldsymbol\beta\|_2^2\).<br><br>
+      \(X^\top\mathbf{y}\) holds each regressor's inner product with the data, and
+      \((X^\top X)^{-1}\) corrects for overlap (correlation) among regressors.
+      It requires \(X^\top X\) to be invertible, i.e. \(X\) has full column rank.

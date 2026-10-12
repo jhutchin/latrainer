@@ -1,0 +1,67 @@
+# Subdeck LA::cogneuro: fMRI / cognitive-neuroscience methods (GLM, RSA, PCA).
+deck: LA::cogneuro
+
+variant_pool:
+  - id: cogneuro.vp.glm-contrast
+    concept: Interpreting a GLM contrast
+    tags: [glm, contrasts]
+    variants:
+      - verified: false
+        prompt: >-
+          A first-level GLM has design matrix
+          \[X = [\,\mathbf{x}_{\text{faces}}\;\; \mathbf{x}_{\text{houses}}\;\; \mathbf{1}\,].\]
+          What does the contrast \(\mathbf{c} = [1,\ -1,\ 0]^\top\) test?
+        answer: >-
+          Whether \(\beta_{\text{faces}} - \beta_{\text{houses}}\) differs from zero:
+          is the response to faces greater than the response to houses?
+        explanation: >-
+          The contrast estimate is
+          \[\mathbf{c}^\top\hat{\boldsymbol\beta} = \hat\beta_{\text{faces}} - \hat\beta_{\text{houses}}.\]
+          The intercept gets
+          weight 0, so the baseline drops out. As a one-sided t-contrast, the sign
+          gives the direction (faces &gt; houses). \([-1,\ 1,\ 0]^\top\) tests the reverse.
+
+      - verified: false
+        prompt: >-
+          With
+          \[X = [\,\mathbf{x}_{\text{faces}}\;\; \mathbf{x}_{\text{houses}}\;\; \mathbf{1}\,],\]
+          what does \(\mathbf{c} = [1,\ 0,\ 0]^\top\) test, and what is it <i>not</i> a test of?
+        answer: >-
+          Whether \(\beta_{\text{faces}} \neq 0\), i.e. the face response relative to
+          the implicit (unmodeled) baseline. It is <i>not</i> a faces-vs-houses comparison.
+        explanation: >-
+          \(\mathbf{c}^\top\hat{\boldsymbol\beta} = \hat\beta_{\text{faces}}\). The houses
+          regressor is still in the model, so its variance is accounted for, but it
+          gets zero weight. "Baseline" means whatever periods no regressor models
+          (e.g. fixation).
+
+      - verified: false
+        prompt: >-
+          Compare the contrasts \(\mathbf{c}_1 = [1,\ 1,\ 0]^\top\) and
+          \(\mathbf{c}_2 = [\tfrac12,\ \tfrac12,\ 0]^\top\) on
+          \(X = [\,\mathbf{x}_{A}\; \mathbf{x}_{B}\; \mathbf{1}\,]\).
+          Do they give the same t-statistic?
+        answer: >-
+          Yes. Both test the average response to A and B versus baseline. The
+          t-statistic is unchanged because scaling \(\mathbf{c}\) scales the
+          numerator and the standard error equally. Only the size of the contrast
+          estimate differs (\(\mathbf{c}_1\) gives the sum, \(\mathbf{c}_2\) the mean).
+        explanation: >-
+          \[t = \frac{\mathbf{c}^\top\hat{\boldsymbol\beta}}
+          {\sqrt{\hat\sigma^2\,\mathbf{c}^\top(X^\top X)^{-1}\mathbf{c}}}\]
+          Replacing \(\mathbf{c}\) with \(k\mathbf{c}\) (for \(k&gt;0\)) multiplies the
+          numerator and the denominator by \(k\). Scaling matters when you report or
+          compare effect sizes, e.g. percent signal change.
+
+      - verified: false
+        prompt: >-
+          A 2&times;2 design has one regressor per cell:
+          \[X = [\,\mathbf{x}_{A_1B_1}\;\; \mathbf{x}_{A_1B_2}\;\; \mathbf{x}_{A_2B_1}\;\; \mathbf{x}_{A_2B_2}\,].\]
+          What does \(\mathbf{c} = [1,\ -1,\ -1,\ 1]^\top\) test?
+        answer: >-
+          The A&times;B interaction: whether the effect of B differs between levels of A.
+        explanation: >-
+          \[\mathbf{c}^\top\hat{\boldsymbol\beta} =
+          (\hat\beta_{A_1B_1} - \hat\beta_{A_1B_2}) - (\hat\beta_{A_2B_1} - \hat\beta_{A_2B_2}),\]
+          a difference of differences. Main effects would be
+          \([1,\ 1,\ -1,\ -1]\) (A) and \([1,\ -1,\ 1,\ -1]\) (B).
