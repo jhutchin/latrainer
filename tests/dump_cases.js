@@ -1,18 +1,15 @@
-/*
- * Print {generator, seed, params, result} for the fixture seeds as JSON.
- * Used by tests/make_fixtures.py; not a test itself.
- */
-var E = typeof require === 'function' ? require('./engine.js') : (load('tests/engine.js'), globalThis.__ENGINE__);
-E.loadScript('templates/shared/latrainer.js');
-E.loadScript('templates/shared/generators.js');
-var LAT = globalThis.LAT;
+// Prints generated problems as JSON for tests/check_numpy.py.
+import { SKILLS } from '../src/skills/index.js';
+import { Rng } from '../src/rng.js';
 
-var SEEDS = [1, 2, 3, 42, 1234, 99999, 2147483655, 4294967295];
-var out = [];
-Object.keys(LAT.generators).sort().forEach(function (name) {
-  SEEDS.forEach(function (seed) {
-    var inst = LAT.instantiate(name, seed);
-    out.push({ generator: name, seed: seed, params: inst.params, result: inst.result });
+const n = Number(process.argv[2] ?? 200);
+const cases = [];
+for (const skill of SKILLS) {
+  skill.levels.forEach((_, li) => {
+    for (let seed = 0; seed < n; seed++) {
+      const p = skill.generate(li + 1, new Rng(seed));
+      cases.push({ skill: skill.id, level: li + 1, seed, data: p.data, answer: p.answer.values.map((r) => r.map(Number)) });
+    }
   });
-});
-E.print(JSON.stringify(out));
+}
+process.stdout.write(JSON.stringify(cases));
